@@ -1,16 +1,55 @@
-version: '3.8'
-
 services:
+  gateway:
+    image: nginx:alpine
+    container_name: guardian-gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ../infra/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+      - jenkins
+    networks:
+      - guardian-net
+
   jenkins:
     image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins-guardian
     privileged: true
     user: root
-    ports:
-      - "8080:8080"
-      - "50000:50000"
-    container_name: jenkins-guardian
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     volumes:
       - ./jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - guardian-net
+
+  backend:
+    build: ../backend
+    container_name: guardian-brain
+    ports:
+      - "8000:8000"
+    environment:
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_USER=admin
+      - JENKINS_TOKEN=your_generated_token
+    depends_on:
+      - jenkins
+    networks:
+      - guardian-net
+
+  frontend:
+    build: ../frontend
+    container_name: guardian-hud
+    environment:
+      - NEXT_PUBLIC_API_URL=/api
+    depends_on:
+      - backend
+    networks:
+      - guardian-net
+
+networks:
+  guardian-net:
+    driver: bridge
