@@ -66,3 +66,12 @@ Our ecosystem is containerized for total isolation. No "it works on my machine" 
 **The Command of Power:**
 ```bash
 docker-compose up --build
+
+## 🏗️ System Architecture: A Unified Organism
+Our project is structured as a biological system, unified by a single **Reverse Proxy Gateway**. This ensures the "Brain" and "HUD" operate as a single, cohesive "Proper Website."
+
+---
+
+## 🏗️ System Architecture: A Unified Organism
+Our project is structured as a biological system, unified by a single **Reverse Proxy Gateway**. This ensures the "Brain" and "HUD" operate as a single, cohesive "Proper Website."
+
